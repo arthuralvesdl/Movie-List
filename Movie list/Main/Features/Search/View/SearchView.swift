@@ -35,7 +35,7 @@ class SearchView: UIView{
         let searchIcon = UIImageView(image: UIImage(systemName: "magnifyingglass"))
         searchIcon.tintColor = .gray
         searchIcon.contentMode = .left
-        searchIcon.frame = CGRect(x: 0, y: 0, width: 20, height: 20) // Ajuste o tamanho conforme necessário
+        searchIcon.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
         searchTextField.bounds = CGRect(x: 0, y: 10, width: -5, height: 0)
         
         searchTextField.leftView = searchIcon
