@@ -22,12 +22,22 @@ class HighlightedMovieCard: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
     private lazy var categoryLabel: UILabel = {
         let label = UILabel()
-        label.text = "\(movie.category! as String) - \( String(format: "%.1f", movie.rating ?? "") as String)"
+        label.text = "\(movie.category) - \(String(format: "%.1f", movie.rating ?? ""))"
         label.font = Styles.Font.smallFont
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    // Background view for labels with 50% transparency
+    private lazy var transparentBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.background.withAlphaComponent(0.3) // 50% transparency
+        view.layer.cornerRadius = 8
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     private lazy var imageView: UIImageView = {
@@ -56,8 +66,11 @@ class HighlightedMovieCard: UIView {
     private func setupView() {
         addSubview(stackView)
         stackView.addArrangedSubview(imageView)
-        stackView.addSubview(movieLabel)
-        stackView.addSubview(categoryLabel)
+        
+        // Add the transparent background behind the labels
+        stackView.addSubview(transparentBackgroundView)
+        transparentBackgroundView.addSubview(movieLabel)
+        transparentBackgroundView.addSubview(categoryLabel)
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor),
@@ -70,11 +83,16 @@ class HighlightedMovieCard: UIView {
             imageView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: stackView.bottomAnchor),
             
-            movieLabel.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -25),
-            movieLabel.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            transparentBackgroundView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -10),
+            transparentBackgroundView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor, constant: 50),
+            transparentBackgroundView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: -50),
             
-            categoryLabel.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -10),
-            categoryLabel.centerXAnchor.constraint(equalTo: imageView.centerXAnchor)
+            transparentBackgroundView.heightAnchor.constraint(equalToConstant: 70),
+            
+            movieLabel.centerXAnchor.constraint(equalTo: transparentBackgroundView.centerXAnchor),
+            
+            categoryLabel.bottomAnchor.constraint(equalTo: transparentBackgroundView.bottomAnchor, constant: 0),
+            categoryLabel.centerXAnchor.constraint(equalTo: transparentBackgroundView.centerXAnchor, constant: 0)
         ])
     }
     
