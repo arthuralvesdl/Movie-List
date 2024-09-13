@@ -4,7 +4,7 @@ import UIKit
 class SearchView: UIView{
     
     private var movieModel: MovieModel
-    
+    private var searchViewModel: SearchViewModel
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -30,29 +30,29 @@ class SearchView: UIView{
         searchTextField.clearButtonMode = .whileEditing
         searchTextField.contentVerticalAlignment = .center
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
-        searchTextField.bounds = CGRect(x: 0, y: 10, width: -5, height: 0)
         
         let searchIcon = UIImageView(image: UIImage(systemName: "magnifyingglass"))
         searchIcon.tintColor = .gray
-        searchIcon.contentMode = .left
-        searchIcon.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-        searchTextField.bounds = CGRect(x: 0, y: 10, width: -5, height: 0)
-        
+        searchIcon.contentMode = .scaleAspectFit
         searchTextField.leftView = searchIcon
         searchTextField.leftViewMode = .always
 
         return searchTextField
     }()
     
-    private lazy var upcomingCollectionView: MovieCollectionView = {
-        let movies = movieModel.upcomingMovies
-        return MovieCollectionView(movieModel: movieModel, movies: movies)
+    private lazy var searchMovieCard: SearchMovieCard = {
+        let movieCard = SearchMovieCard(searchViewModel: self.searchViewModel, movieModel: self.movieModel, searchValue: self.searchTextInput.text ?? "")
+        movieCard.translatesAutoresizingMaskIntoConstraints = false
+
+        return movieCard
     }()
     
-    init(movieModel: MovieModel) {
+    init(movieModel: MovieModel, searchViewModel: SearchViewModel) {
         self.movieModel = movieModel
+        self.searchViewModel = searchViewModel
         super.init(frame: CGRect())
         setupView()
+        addSearchTextFieldTarget()
     }
     
     required init?(coder: NSCoder) {
@@ -60,25 +60,40 @@ class SearchView: UIView{
     }
     
     private func setupView() {
-        
         addSubview(contentView)
         contentView.addSubview(searchTextInput)
         contentView.addSubview(scrollView)
-   
+        scrollView.addSubview(searchMovieCard)
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            searchTextInput.topAnchor.constraint(equalTo: topAnchor),
-            searchTextInput.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            searchTextInput.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            searchTextInput.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            searchTextInput.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            searchTextInput.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
             scrollView.topAnchor.constraint(equalTo: searchTextInput.bottomAnchor, constant: 10),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            searchMovieCard.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10),
+            searchMovieCard.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 10),
+            searchMovieCard.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -10),
+            searchMovieCard.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            searchMovieCard.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor)
+            
         ])
     }
+    
+    private func addSearchTextFieldTarget() {
+        searchTextInput.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    }
+    
+    @objc private func textFieldDidChange() {
+           searchMovieCard.searchValue = searchTextInput.text ?? ""
+           searchMovieCard.updateMovies()
+       }
 }

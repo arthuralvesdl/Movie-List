@@ -15,8 +15,8 @@ class SearchCoordinator: Coordinator{
     
     private func startSearchViewController(tabBatItem: UITabBarItem) {
         let movieModel = MovieModel()
-    
-        let contentView = SearchView(movieModel: movieModel)
+        let searchViewModel = SearchViewModel(movieModel: movieModel)
+        let contentView = SearchView(movieModel: movieModel,searchViewModel: searchViewModel)
         let searchViewController = SearchViewController(contentView: contentView)
         
         let movieCoordinator = MovieCoordinator(navigationController: navigationController)
