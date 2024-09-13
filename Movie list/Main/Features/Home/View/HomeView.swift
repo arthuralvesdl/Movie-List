@@ -112,7 +112,7 @@ class HomeView: UIView, HomeViewDelegate {
             highlightedMovieCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             highlightedMovieCard.heightAnchor.constraint(equalToConstant: 350),
             
-            upcomingLabel.topAnchor.constraint(equalTo: highlightedMovieCard.bottomAnchor, constant: 10),
+            upcomingLabel.topAnchor.constraint(equalTo: highlightedMovieCard.bottomAnchor, constant: 20),
             upcomingLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
             stackView.topAnchor.constraint(equalTo: upcomingLabel.bottomAnchor, constant: 10),
