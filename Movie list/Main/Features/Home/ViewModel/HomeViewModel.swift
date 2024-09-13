@@ -2,7 +2,7 @@ struct Movie {
     let id: String
     let name: String
     let imageUrl: String
-    let category: String?
+    let category: String
     let description: String
     let rating: Double?
 }
